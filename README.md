@@ -55,7 +55,7 @@ La base de datos gestionará información de productos, usuarios y operaciones r
 ## Introducción
 
 ### Objetivo del documento
-Proveer una descripción técnica de la base de datos del sitio web administrable. Servirá como guía para su diseño e implementación en PostgreSQL, enfocándose en estructura, seguridad y escalabilidad.
+Proveer una descripción técnica de la base de datos utilizada en el desarrollo del sitio web administrable. Este documento servirá como guía para su diseño, implementación y mantenimiento dentro del sistema, haciendo énfasis en su estructura relacional, normalización, integridad de datos, seguridad y escalabilidad. 
 
 ### Alcance del proyecto
 La base de datos gestionará:
@@ -65,15 +65,16 @@ La base de datos gestionará:
 - Registros de auditoría
 
 ### Beneficios esperados
-- Gestión eficiente de contenido
-- Seguridad en el acceso
-- Escalabilidad para futuras funciones
+- Manejo fácil y ordenado del contenido y la información del sitio.
+- Mayor seguridad al controlar quién puede ver o modificar los datos.
+- Capacidad para agregar nuevas funciones o partes al sistema en el futuro sin complicaciones.
+- Base de datos bien organizada, siguiendo reglas que evitan errores o datos repetidos.
+- Información clara y ordenada que facilita hacer búsquedas, reportes y darle mantenimiento al sistema.
 
 ### Público objetivo
-- Administradores del sitio
-- Usuarios visitantes
-- Contenido orientado a mujeres y chicas (moda, salud, bienestar)
-
+- Administradores del sitio: personas encargadas de subir productos, revisar citas y controlar todo el sistema.
+- Usuarios visitante: personas que entran al sitio para ver, rentar o comprar vestidos.
+- Mujeres y chicas interesadas en temas como moda que son el público principal del contenido del sitio.
 ---
 
 ## Análisis y Requerimientos
