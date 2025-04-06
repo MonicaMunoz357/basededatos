@@ -205,7 +205,7 @@ Por ejemplo, el campo de tallas, originalmente almacenado como texto en la tabla
 
 ## Diagrama de flujo
 
-[image]
+![diagrama de flujo](https://github.com/user-attachments/assets/1b7822a0-4fa1-4d3b-81ae-c4deed2bb3ac)
 
 Como se puede observar en la imagen, el sistema inicia con el ingreso de credenciales y, una vez validadas, dirige al usuario según su rol. Si es un usuario común, puede acceder al catálogo, seleccionar vestidos, agregarlos al carrito y confirmar una cita. Si es administrador, se le muestra un panel con opciones para publicar, actualizar vestidos o consultar el inventario. Cada usuario accede solo a las funciones correspondientes a su perfil, asegurando un flujo controlado y eficiente.
 
