@@ -42,7 +42,7 @@ La base de datos gestionará información de productos, usuarios y operaciones r
 
 ### Resumen de los principales hallazgos
 
-1. **Estructura inicial bien definida:** Tablas principales: `productos`, `usuario`, `carrito`, `inventario`, `disponibilidad`, `estatus`, `cita`.
+1. **Estructura inicial bien definida:** Tablas principales: `productos`, `talla`, `usuario`, `carrito`, `inventario`, `disponibilidad`, `estatus`, `cita`.
 2. **Optimización y rendimiento:** Se implementarán índices en columnas clave como `id_producto`, `id_usuario`, `id_carrito`, `estatus`.
 3. **Gestión de inventario y disponibilidad:** Relaciones entre `productos`, `inventario` y `disponibilidad` para reflejar el stock en tiempo real.
 
@@ -84,7 +84,7 @@ La base de datos será la infraestructura central para el almacenamiento y gesti
 #### Función principal
 La base de datos almacenará información crítica para el funcionamiento del sitio, incluyendo:
 •	Datos de usuarios (tales como registros, autenticaciones, roles y permisos).
-•	Contenido del sitio web (páginas, artículos, imágenes, videos, y otros recursos multimedia).
+•	Contenido del sitio web (páginas, artículos, imágenes y otros recursos multimedia).
 
 #### Necesidades clave
 1.	Centralización de la información: La DB reunirá toda la información clave del sitio en un solo lugar, lo que facilitará el acceso y la gestión eficiente del contenido y de los datos de los usuarios. 
@@ -113,7 +113,7 @@ La base de datos almacenará información crítica para el funcionamiento del si
 
 Para proteger la integridad y privacidad de los datos almacenados, se aplicarán las siguientes medidas:
 
-- **Control de acceso basado en roles:** Solo los administradores tendrán permisos completos, mientras que los editores y usuarios tendrán accesos limitados.
+- **Control de acceso basado en roles:** Solo los administradores tendrán permisos completos, mientras que los usuarios tendrán accesos limitados.
 - **Respaldo y recuperación de datos:** Mecanismos automáticos de Backus para prevenir pérdida de información en caso de fallos.
 - **Protección contra inyección SQL:** Uso de consultas parametrizadas para evitar ataques de seguridad.
 
@@ -143,12 +143,19 @@ Para proteger la integridad y privacidad de los datos almacenados, se aplicarán
 | id_vestido    | SERIAL (PK)      | ID del vestido            |
 | nombre        | VARCHAR(255)     | Nombre del vestido        |
 | precio        | NUMERIC(10,2)    | Precio                    |
-| tallas        | VARCHAR(50)      | Tallas disponibles        |
 | categoria     | VARCHAR(100)     | Categoría (boda, fiesta)  |
 | marca         | VARCHAR(100)     | Marca del vestido         |
 | imagen        | VARCHAR(255)     | URL de imagen             |
 | descripcion   | TEXT             | Descripción del vestido   |
 | disponibilidad| BOOLEAN          | Disponibilidad en stock   |
+
+#### Tabla: `talla`
+| Campo       | Tipo de dato     | Descripción               |
+|-------------|------------------|---------------------------|
+| id_talla    | SERIAL (PK)      | ID del talla del vestido  |
+| id_usuario  | INTEGER (FK)     | Usuario dueño             |
+| id_vestido  | INTEGER (FK)     | ID del vestido            |
+| agregado    | TIMESTAMP        | Fecha de creación         |
 
 #### Tabla: `carrito`
 | Campo       | Tipo de dato     | Descripción               |
@@ -188,15 +195,19 @@ Para proteger la integridad y privacidad de los datos almacenados, se aplicarán
 | cantidad      | INTEGER          | Cantidad de vestidos      |
 | fecha         | TIMESTAMP        | Fecha del movimiento      |
 
+
 ### Normalización y optimización
-•	1FN: Todas las tablas tienen valores atómicos (no repetidos).
-•	2FN: Todos los atributos dependen completamente de la clave primaria.
-•	3FN: No existen dependencias transitivas.
-•	Se utilizaron claves foráneas para mantener integridad referencial.
-•	Tablas intermedias (carrito_productos, cita_productos) para relaciones muchos-a-muchos.
-•	Se recomienda crear índices en campos como id_usuario, id_vestido y id_cita para acelerar consultas.
- 
----
+
+Para garantizar una estructura eficiente, escalable y alineada con las buenas prácticas del diseño relacional, se planteó implementar un modelo de base de datos siguiendo los principios de normalización, hasta la Tercera Forma Normal (3FN). Esto implica que cada tabla contiene datos atómicos (1FN), que todos los campos dependen completamente de su clave primaria (2FN) y que no existen dependencias transitivas entre atributos no clave (3FN). 
+Por ejemplo, el campo de tallas, originalmente almacenado como texto en la tabla de vestidos, se separó en una tabla propia relacionada mediante una tabla intermedia, permitiendo representar relaciones muchos a muchos de forma adecuada. Además, se definieron claves primarias y foráneas para mantener la integridad referencial, y se consideró el uso de índices en campos clave para mejorar el rendimiento de las consultas.
+
+
+## Diagrama de flujo
+
+[image]
+
+Como se puede observar en la imagen, el sistema inicia con el ingreso de credenciales y, una vez validadas, dirige al usuario según su rol. Si es un usuario común, puede acceder al catálogo, seleccionar vestidos, agregarlos al carrito y confirmar una cita. Si es administrador, se le muestra un panel con opciones para publicar, actualizar vestidos o consultar el inventario. Cada usuario accede solo a las funciones correspondientes a su perfil, asegurando un flujo controlado y eficiente.
+
 
 ## Tecnologías y Herramientas
 
@@ -209,6 +220,9 @@ Desarrollada originalmente en 1986 como continuación de INGRES POSTGRES, ahora 
 Hoy, PostgreSQL continúa evolucionando, mantenido por un equipo internacional apasionado por mejorar con regularidad este proyecto de base de datos de código abierto y gratuito. 
 Mantener sistemas de bases de datos dinámicos es fundamental en el panorama digital actual, especialmente considerando la velocidad a la que surgen nuevas tecnologías. PostgreSQL es expandible y versátil, por lo que puede soportar rápidamente una variedad de casos de uso especializados con un poderoso ecosistema de extensión, que abarca desde tipos de datos de series de tiempo hasta análisis geoespaciales.
 Su diseño versátil y accesible convierte a PostgreSQL en una solución de "talla única" para muchas empresas que buscan formas rentables y eficientes de mejorar sus sistemas de gestión de bases de datos. Creada como una solución de base de datos de código abierto (enlace externo a ibm.com), PostgreSQL está completamente libre de restricciones de licencia, potencial de bloqueo de proveedores o riesgo de implementación excesiva. Los desarrolladores expertos y las empresas comerciales que son conscientes de las limitaciones de los sistemas de bases de datos tradicionales apoyan firmemente PostgreSQL. Trabajan diligentemente para proporcionar el mejor sistema en su clase de gestión de bases de datos relacionales probado sobre el terreno.
+
+Se eligió PostgreSQL por ser un sistema de base de datos robusto, de código abierto y altamente compatible con los estándares SQL. Su capacidad para manejar relaciones complejas, como la normalización entre vestidos y tallas, lo hace ideal para estructuras de datos bien definidas. Además, se integra fácilmente con tecnologías modernas como Node.js y Sequelize, lo que facilita su uso en aplicaciones web escalables y mantenibles.
+
 
 **Ventajas:**
 - Libre de licencias restrictivas
@@ -225,11 +239,6 @@ Su diseño versátil y accesible convierte a PostgreSQL en una solución de "tal
 - PHP (Laravel - Eloquent)  
 - Ruby (Ruby on Rails)
 
-**Frameworks y herramientas para trabajar con PostgreSQL:**
-- Django (Python)
-- Flask + SQLAlchemy (Python)
-- Express.js + Sequelize (Node.js)
-- Laravel (PHP)
 
 ---
 ## Instalación y configuración del SGBD
