@@ -132,7 +132,7 @@ Como se puede observar en la imagen, el sistema inicia con el ingreso de credenc
 
 ## Diseño de la Base de Datos
 
-![bd](https://github.com/user-attachments/assets/70f26813-059b-43fd-b3f3-4fc26cb98cfc)
+![bd](https://github.com/user-attachments/assets/095ffa6a-778d-42e3-8e47-72744dfa658f)
 
 La base de datos representa el sistema del sitio web administrativo para la gestión de renta o venta de vestidos, permitiendo el control de usuarios (clientes y administradores), productos, inventario por tallas, movimientos de stock, carritos de compra y citas para probarse vestidos. Está estructurada con relaciones claras entre tablas, permitiendo una gestión eficiente del catálogo, la disponibilidad de prendas y la interacción de los usuarios con el sistema, lo que la hace ideal para operaciones comerciales y logísticas dentro de una tienda de moda o boutique en línea.
 
