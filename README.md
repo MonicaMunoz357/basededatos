@@ -580,6 +580,7 @@ CREATE TABLE citas (
     hora TIME
 );
 
+
 -- Tabla cita_productos
 CREATE TABLE cita_productos (
     id_cita INTEGER REFERENCES citas(id_cita),
@@ -589,8 +590,18 @@ CREATE TABLE cita_productos (
 
      
      - digramas de DB
+     ![Imagen de WhatsApp 2025-04-06 a las 21 48 13_68f81ff3](https://github.com/user-attachments/assets/5f75f0b1-2c83-4e93-acad-48b050127051)
+
      
 - referencias
+
+BM. (s.f.). ¿Qué es PostgreSQL? IBM. Recuperado el 7 de abril de 2025, de https://www.ibm.com/mx-es/topics/postgresql
+
+PostgreSQL Global Development Group. (2021). PostgreSQL 14 Kit de prensa - Español. PostgreSQL. Recuperado de https://www.postgresql.org/about/press/presskit14/es/
+
+Microsoft. (s.f.). Descripción de la normalización de bases de datos para diseñadores de bases de datos. Microsoft Learn. Recuperado el 7 de abril de 2025, de https://learn.microsoft.com/es-es/office/troubleshoot/access/database-normalization-description
+
+
 
 
 
