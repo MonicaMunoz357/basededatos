@@ -590,8 +590,8 @@ CREATE TABLE cita_productos (
 
      
      - digramas de DB
-     ![Imagen de WhatsApp 2025-04-06 a las 21 48 13_68f81ff3](https://github.com/user-attachments/assets/5f75f0b1-2c83-4e93-acad-48b050127051)
-
+    ![Diagrama de Base de datoa](https://github.com/user-attachments/assets/49075ae3-20e1-4efa-8de1-95a449057ac9)
+)
      
 - referencias
 
