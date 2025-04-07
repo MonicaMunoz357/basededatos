@@ -590,6 +590,8 @@ CREATE TABLE cita_productos (
 
      
      - digramas de DB
+
+
     ![Diagrama de Base de datoa](https://github.com/user-attachments/assets/49075ae3-20e1-4efa-8de1-95a449057ac9)
 )
      
