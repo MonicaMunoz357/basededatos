@@ -123,7 +123,10 @@ Para proteger la integridad y privacidad de los datos almacenados, se aplicarán
 
 ## Diseño de la Base de Datos
 
-![image](https://github.com/user-attachments/assets/951375c1-d821-4f3e-b5c2-20664f5f979a)
+![bd](https://github.com/user-attachments/assets/70f26813-059b-43fd-b3f3-4fc26cb98cfc)
+
+La base de datos representa el sistema del sitio web administrativo para la gestión de renta o venta de vestidos, permitiendo el control de usuarios (clientes y administradores), productos, inventario por tallas, movimientos de stock, carritos de compra y citas para probarse vestidos. Está estructurada con relaciones claras entre tablas, permitiendo una gestión eficiente del catálogo, la disponibilidad de prendas y la interacción de los usuarios con el sistema, lo que la hace ideal para operaciones comerciales y logísticas dentro de una tienda de moda o boutique en línea.
+
 
 ### Diccionario de Datos
 
@@ -148,15 +151,31 @@ Para proteger la integridad y privacidad de los datos almacenados, se aplicarán
 | marca         | VARCHAR(100)     | Marca del vestido         |
 | imagen        | VARCHAR(255)     | URL de imagen             |
 | descripcion   | TEXT             | Descripción del vestido   |
-| disponibilidad| BOOLEAN          | Disponibilidad en stock   |
 
 #### Tabla: `talla`
 | Campo       | Tipo de dato     | Descripción               |
 |-------------|------------------|---------------------------|
 | id_talla    | SERIAL (PK)      | ID del talla del vestido  |
-| id_usuario  | INTEGER (FK)     | Usuario dueño             |
-| id_vestido  | INTEGER (FK)     | ID del vestido            |
-| agregado    | TIMESTAMP        | Fecha de creación         |
+| talla       | 	VARCHAR(10)     | Nombre/número de la talla |
+
+#### Tabla: `inventario_vestido`
+| Campo          | Tipo de dato     | Descripción                   |
+|----------------|------------------|-------------------------------|
+| id_vestido     | SERIAL (PK)      | ID del vestido                |
+| id_talla       | INTEGER (FK)     | ID de la talla                |
+| disponibilidad | INTEGER          | cantidad disponible           |
+| id_inventario  | INTEGER          | identificardor del inventario |
+
+
+#### Tabla: `movimientos_inventario`
+| Campo         | Tipo de dato   | Descripción                 |
+|---------------|----------------|-----------------------------|
+| id_movimiento | SERIAL (PK)    | Identificador del movimiento|
+| id_vestido    | INTEGER (FK)   | ID del vestido              |
+| id_talla      | INTEGER (FK)   | ID de la talla              |
+| cantidad      | INTEGER        |	Cantidad agregada o retirada|
+| fecha         | TIMESTAMP      | Fecha del movimiento        |
+
 
 #### Tabla: `carrito`
 | Campo       | Tipo de dato     | Descripción               |
@@ -164,6 +183,7 @@ Para proteger la integridad y privacidad de los datos almacenados, se aplicarán
 | id_carrito  | SERIAL (PK)      | ID del carrito            |
 | id_usuario  | INTEGER (FK)     | Usuario dueño             |
 | agregado    | TIMESTAMP        | Fecha de creación         |
+
 
 #### Tabla: `carrito_productos`
 | Campo        | Tipo de dato     | Descripción               |
@@ -186,15 +206,6 @@ Para proteger la integridad y privacidad de los datos almacenados, se aplicarán
 | id_cita    | INTEGER (FK)     | ID de la cita             |
 | id_vestido | INTEGER (FK)     | Vestido reservado         |
 | cantidad   | INTEGER          | Cantidad reservada        |
-
-#### Tabla: `movimientos_inventario`
-| Campo         | Tipo de dato     | Descripción               |
-|---------------|------------------|---------------------------|
-| id_movimiento | SERIAL (PK)      | ID del movimiento         |
-| id_vestido    | INTEGER (FK)     | Vestido afectado          |
-| tipo          | TEXT             | 'entrada' o 'salida'      |
-| cantidad      | INTEGER          | Cantidad de vestidos      |
-| fecha         | TIMESTAMP        | Fecha del movimiento      |
 
 
 ### Normalización y optimización
