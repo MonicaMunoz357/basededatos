@@ -38,7 +38,7 @@
 ### Breve introducción al propósito del documento
 Este documento tiene como objetivo describir la estructura inicial de la base de datos desarrollada en PostgreSQL. Se detallará el diseño de las tablas, sus relaciones y estrategias de optimización, seguridad y escalabilidad para garantizar un sistema eficiente y robusto.
 
-La base de datos gestionará información de productos, usuarios y operaciones relacionadas dentro de un e-commerce.
+La base de datos gestionará información de productos, usuarios y operaciones relacionadas dentro de un Sistema web administrable.
 
 ### Resumen de los principales hallazgos
 
@@ -482,4 +482,115 @@ Se implementó una base de datos relacional robusta utilizando PostgreSQL, dise�
 -Activar notificaciones automáticas: El sistema puede enviar alertas cuando el inventario de un vestido esté por agotarse, lo cual ayuda a mantener el stock al día.
 
 -Automatizar pruebas: Sería ideal agregar pruebas automáticas que verifiquen que todo sigue funcionando correctamente cuando se hagan cambios en la base de datos, para evitar errores sin necesidad de hacer pruebas manuales.
+
+- anexos
+     - manual de usuario
+Nombre del Sistema: Sistema web administrable 
+
+Descripción General:
+Este sistema permite a los usuarios gestionar vestidos disponibles para renta o venta, visualizar el inventario, realizar citas y registrar productos en carritos. También lleva control de movimientos en el inventario y tallas disponibles.
+
+Acceso al Sistema:
+Los usuarios acceden mediante su correo electrónico y contraseña. El sistema diferencia entre usuarios regulares y administradores mediante un campo booleano (rol).
+
+Funciones Principales:
+
+Gestión de Usuarios:
+Registro y manejo de usuarios con sus datos personales (nombre, correo, teléfono). El rol define si es administrador.
+
+Gestión de Vestidos:
+Los vestidos están catalogados con nombre, precio, categoría, marca, imagen y descripción.
+
+Inventario y Tallas:
+Cada vestido está vinculado a tallas específicas. Se puede ver la disponibilidad por talla.
+
+Citas:
+Los usuarios pueden agendar citas para probarse vestidos, registrando fecha y hora.
+
+Carrito de Productos:
+Los usuarios agregan vestidos al carrito. Este carrito queda registrado con cantidad y fecha de agregado.
+
+Movimientos de Inventario:
+Cada entrada o salida de vestidos del inventario se registra para mantener trazabilidad.
+
+     - scripts
+-- Tabla usuarios
+CREATE TABLE usuarios (
+    id_usuario SERIAL PRIMARY KEY,
+    nombre VARCHAR(255),
+    correo VARCHAR(255),
+    telefono VARCHAR(12),
+    password VARCHAR(255),
+    fecha TIMESTAMP,
+    rol BOOLEAN
+);
+
+-- Tabla vestidos
+CREATE TABLE vestidos (
+    id_vestido SERIAL PRIMARY KEY,
+    nombre VARCHAR(255),
+    precio NUMERIC(10,2),
+    categoria VARCHAR(100),
+    marca VARCHAR(100),
+    imagen VARCHAR(255),
+    descripcion TEXT
+);
+
+-- Tabla tallas
+CREATE TABLE tallas (
+    id_talla INTEGER PRIMARY KEY,
+    talla VARCHAR(10)
+);
+
+-- Tabla inventario_vestidos
+CREATE TABLE inventario_vestidos (
+    id_inventario SERIAL PRIMARY KEY,
+    id_vestido INTEGER REFERENCES vestidos(id_vestido),
+    id_talla INTEGER REFERENCES tallas(id_talla),
+    disponibilidad INTEGER
+);
+
+-- Tabla movimientos_inventario
+CREATE TABLE movimientos_inventario (
+    id_movimiento SERIAL PRIMARY KEY,
+    id_vestido INTEGER REFERENCES vestidos(id_vestido),
+    cantidad INTEGER,
+    fecha TIMESTAMP
+);
+
+-- Tabla carrito
+CREATE TABLE carrito (
+    id_carrito SERIAL PRIMARY KEY,
+    id_usuario INTEGER REFERENCES usuarios(id_usuario),
+    agregado TIMESTAMP
+);
+
+-- Tabla carrito_productos
+CREATE TABLE carrito_productos (
+    id_carrito INTEGER REFERENCES carrito(id_carrito),
+    id_vestido INTEGER REFERENCES vestidos(id_vestido),
+    cantidad INTEGER
+);
+
+-- Tabla citas
+CREATE TABLE citas (
+    id_cita SERIAL PRIMARY KEY,
+    id_usuario INTEGER REFERENCES usuarios(id_usuario),
+    fecha_cita DATE,
+    hora TIME
+);
+
+-- Tabla cita_productos
+CREATE TABLE cita_productos (
+    id_cita INTEGER REFERENCES citas(id_cita),
+    id_vestido INTEGER REFERENCES vestidos(id_vestido),
+    cantidad INTEGER
+);
+
+     
+     - digramas de DB
+     
+- referencias
+
+
 
