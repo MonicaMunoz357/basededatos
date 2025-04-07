@@ -309,7 +309,8 @@ A continuación, se describen los pasos para su instalación en diferentes siste
 
    ![image](https://github.com/user-attachments/assets/1d0f0d97-762f-4d55-8c3a-36e75e553ea8)
 
-### Creación de la estructura de la DB (scripts o esquemas)
+## Creación de la Base de Datos
+
 ```sql
 -- Tabla: usuarios
 CREATE TABLE usuarios (
@@ -327,12 +328,26 @@ CREATE TABLE vestidos (
     id_vestido SERIAL PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     precio NUMERIC(10,2) NOT NULL,
-    tallas VARCHAR(50),
     categoria VARCHAR(100),
     marca VARCHAR(100),
     imagen VARCHAR(255),
-    descripcion TEXT,
-    disponibilidad BOOLEAN NOT NULL
+    descripcion TEXT
+);
+
+-- Tabla: tallas
+CREATE TABLE tallas (
+    id_talla INTEGER PRIMARY KEY,
+    talla VARCHAR(10) NOT NULL
+);
+
+-- Tabla: inventario_vestidos
+CREATE TABLE inventario_vestidos (
+    id_inventario SERIAL PRIMARY KEY,
+    id_vestido INTEGER NOT NULL,
+    id_talla INTEGER NOT NULL,
+    disponibilidad INTEGER NOT NULL CHECK (disponibilidad >= 0),
+    FOREIGN KEY (id_vestido) REFERENCES vestidos(id_vestido) ON DELETE CASCADE,
+    FOREIGN KEY (id_talla) REFERENCES tallas(id_talla) ON DELETE CASCADE
 );
 
 -- Tabla: carrito
@@ -376,36 +391,95 @@ CREATE TABLE cita_productos (
 CREATE TABLE movimientos_inventario (
     id_movimiento SERIAL PRIMARY KEY,
     id_vestido INTEGER NOT NULL,
-    tipo TEXT CHECK (tipo IN ('entrada', 'salida')) NOT NULL,
+    id_talla INTEGER NOT NULL,
     cantidad INTEGER NOT NULL CHECK (cantidad > 0),
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_vestido) REFERENCES vestidos(id_vestido) ON DELETE CASCADE
+    FOREIGN KEY (id_vestido) REFERENCES vestidos(id_vestido) ON DELETE CASCADE,
+    FOREIGN KEY (id_talla) REFERENCES tallas(id_talla) ON DELETE CASCADE
 );
-```
-###Pruebas de Inserción y Consulta de Datos
+````
+## Pruebas de Inserción y Consulta de Datos (Esquema Actualizado)
+
+### 1. Inserciones de Prueba
+
+Se realizaron inserciones para validar que la estructura extendida funcione correctamente, incluyendo relaciones nuevas como tallas e inventario:
+
+- **Usuarios**: Se insertaron usuarios con distintos roles para verificar restricciones de correo único y formato.
+- **Tallas**: Se añadieron tallas estándar (XS, S, M, L, XL) para ser asociadas a los vestidos.
+- **Vestidos**: Se ingresaron registros con diferentes atributos (categoría, marca, imagen, descripción).
+- **Inventario de Vestidos**: Se asociaron vestidos con sus respectivas tallas y cantidades disponibles.
+- **Carrito y Carrito Productos**: Se creó un carrito para un usuario e ingresaron productos con cantidad positiva.
+- **Citas y Cita Productos**: Se asignaron citas a usuarios con vestidos relacionados.
+- **Movimientos de Inventario**: Se registraron entradas para actualizar el stock inicial.
+
+### 2. Consultas de Verificación
+
+Se verificaron mediante SELECTs:
+
+- Todos los usuarios registrados.
+- Vestidos disponibles por talla.
+- Inventario completo por vestido y talla.
+- Contenido del carrito de un usuario específico.
+- Citas agendadas por fecha y usuario.
+- Historial de movimientos de inventario ordenado por fecha.
 
 
-### 1. Inserción de Datos de Prueba
+## Optimización de Índices y Rendimiento
 
-Se ingresaron registros de prueba para verificar el correcto funcionamiento de las relaciones entre las tablas y las restricciones de integridad. A continuación, un resumen de las acciones realizadas:
+### Índices Adicionales Recomendados
 
-- **Usuarios**: Se insertaron dos usuarios, uno con rol de administrador y otro como cliente.
-- **Vestidos**: Se agregaron vestidos con distintas tallas, precios, categorías y marcas.
-- **Carrito**: Se creó un carrito vinculado a un usuario específico.
-- **Carrito Productos**: Se agregaron vestidos al carrito con cantidades válidas.
-- **Citas**: Se registraron citas con fecha y hora asignadas a usuarios.
-- **Cita Productos**: Se asociaron vestidos específicos a cada cita.
-- **Movimientos de Inventario**: Se realizaron registros de entrada de inventario para controlar el stock.
+Para mejorar el rendimiento en consultas frecuentes:
 
-### 2. Consultas Realizadas para Verificación
+- Índice en `correo` de `usuarios` (ya es UNIQUE, índice implícito).
+- Índice en `id_usuario` de `carrito`, `citas` (ya están con FK, pero pueden tener índices adicionales si se consultan mucho).
+- Índice compuesto en `inventario_vestidos(id_vestido, id_talla)` para búsquedas por disponibilidad.
+- Índice en `id_vestido` de `movimientos_inventario` para historial por producto.
 
-Se realizaron consultas básicas para validar que los datos se insertaron correctamente y las relaciones funcionen según lo esperado:
+### Recomendaciones Generales
 
-- Consulta de todos los usuarios registrados.
-- Consulta de vestidos disponibles (disponibilidad = true).
-- Consulta del contenido del carrito por usuario (unión entre varias tablas).
-- Consulta de citas agendadas por usuario, incluyendo fecha y hora.
-- Consulta del historial de movimientos de inventario, ordenado por fecha.
+- Realizar `ANALYZE` regularmente para actualizar estadísticas del planner.
+- Usar `EXPLAIN ANALYZE` para identificar cuellos de botella en consultas complejas.
+- Considerar particionamiento de `movimientos_inventario` si crece mucho.
+- Utilizar `VACUUM` para mantener rendimiento y limpiar registros muertos.
 
-Estas pruebas confirmaron que la estructura de la base de datos funciona correctamente con los tipos de datos y claves foráneas definidas, y que las inserciones cumplen con las restricciones (por ejemplo, cantidades positivas).
+##  Seguridad y Respaldo
+
+### Encriptación de Datos Sensibles
+
+- **Contraseñas**: Se recomienda almacenar contraseñas utilizando algoritmos de hash seguros como `bcrypt` o `argon2`, en lugar de texto plano.
+- **Conexiones Seguras**: Asegurar que todas las conexiones a la base de datos pasen por SSL/TLS para prevenir interceptación de datos.
+- **Datos personales**: Se puede aplicar encriptación a nivel de columna si se requiere proteger información como teléfono o correo, dependiendo del nivel de confidencialidad.
+
+### Plan de Respaldo y Recuperación ante Fallos
+
+- **Backups regulares**: Programar respaldos automáticos de la base de datos (diarios o semanales) utilizando herramientas como `pg_dump`, `pg_basebackup` o soluciones gestionadas en la nube.
+- **Almacenamiento externo**: Guardar los respaldos en ubicaciones externas y seguras (como Amazon S3 o servidores de respaldo).
+- **Pruebas de restauración**: Verificar regularmente que los respaldos puedan restaurarse correctamente.
+- **Puntos de recuperación**: Implementar WAL Archiving (Write-Ahead Logging) para restaurar hasta un punto específico en caso de errores críticos o corrupción.
+- **Alta disponibilidad**: Considerar configuraciones de replicación y failover si la base de datos debe estar disponible en todo momento.
+
+
+## Conclusiones y Recomendaciones
+
+### Resumen de la Implementación
+
+Se implementó una base de datos relacional robusta utilizando PostgreSQL, diseñada para gestionar un sistema de renta de vestidos. La estructura contempla entidades clave como usuarios, productos, tallas, inventario, carritos, citas y movimientos de inventario. Se añadieron validaciones de integridad referencial, restricciones, índices y pruebas funcionales.
+
+### Desafíos Enfrentados y Soluciones Aplicadas
+
+- **Modelado de inventario por tallas**: Se resolvió mediante una tabla intermedia `inventario_vestidos` que permite registrar múltiples tallas por vestido.
+- **Prevención de datos inconsistentes**: Se aplicaron claves foráneas, restricciones `CHECK`, y eliminación en cascada (`ON DELETE CASCADE`) para mantener la integridad.
+- **Consultas lentas en relaciones complejas**: Se abordó con sugerencias de índices compuestos y uso de herramientas como `EXPLAIN ANALYZE`.
+
+### Recomendaciones para Futuras Mejoras
+
+-Agregar seguimiento de acciones importantes: Se pueden crear tablas especiales para guardar un historial de cambios importantes, como modificaciones de datos o inicios de sesión, para tener control y rastrear qué sucede en el sistema.
+
+-Preparar el sistema para crecer: Si el proyecto llega a tener muchos usuarios o productos, podrías dividirlo en partes más pequeñas (microservicios) o distribuir los datos en varios servidores para que siga funcionando bien sin volverse lento.
+
+-Crear un panel de administración: Sería útil tener una interfaz visual para ver fácilmente el inventario, las citas o los usuarios registrados, sin necesidad de escribir consultas SQL.
+
+-Activar notificaciones automáticas: El sistema puede enviar alertas cuando el inventario de un vestido esté por agotarse, lo cual ayuda a mantener el stock al día.
+
+-Automatizar pruebas: Sería ideal agregar pruebas automáticas que verifiquen que todo sigue funcionando correctamente cuando se hagan cambios en la base de datos, para evitar errores sin necesidad de hacer pruebas manuales.
 
