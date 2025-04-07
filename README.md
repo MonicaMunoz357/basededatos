@@ -42,9 +42,9 @@ La base de datos gestionará información de productos, usuarios y operaciones r
 
 ### Resumen de los principales hallazgos
 
-1. **Estructura inicial bien definida:** Tablas principales: `productos`, `talla`, `usuario`, `carrito`, `inventario`, `disponibilidad`, `estatus`, `cita`.
-2. **Optimización y rendimiento:** Se implementarán índices en columnas clave como `id_producto`, `id_usuario`, `id_carrito`, `estatus`.
-3. **Gestión de inventario y disponibilidad:** Relaciones entre `productos`, `inventario` y `disponibilidad` para reflejar el stock en tiempo real.
+1. **Estructura inicial bien definida:** La base de datos cuenta con una estructura lógica clara, compuesta por tablas fundamentales como usuarios, vestidos, tallas, carrito, carrito_productos, inventario_vestidos, movimientos_inventario, citas y cita_productos, permitiendo una gestión integral del sistema de renta/venta de vestidos.
+2. **Optimización y rendimiento:** Se implementarán índices en columnas clave como `id_vestido`, `id_inventario`, `id_cita`, `id_usuario`, `id_carrito`, `estatus`.
+3. **Gestión de inventario y disponibilidad:** El control del stock se logra a través de la relación entre vestidos, tallas, inventario_vestidos y movimientos_inventario, lo que permite reflejar la disponibilidad en tiempo real y registrar cada entrada o salida del almacén.
 
 ### Rendimiento y optimización
 - **Índices en columnas clave:** `id_producto`, `id_usuario`, `id_carrito`, `id_inventario`, `estatus`.
