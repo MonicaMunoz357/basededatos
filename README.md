@@ -121,7 +121,7 @@ Para proteger la integridad y privacidad de los datos almacenados, se aplicarán
 
 ---
 
-## Diseño de la Base de Datos
+
 
 ## Diagrama de flujo
 
@@ -129,6 +129,8 @@ Para proteger la integridad y privacidad de los datos almacenados, se aplicarán
 
 Como se puede observar en la imagen, el sistema inicia con el ingreso de credenciales y, una vez validadas, dirige al usuario según su rol. Si es un usuario común, puede acceder al catálogo, seleccionar vestidos, agregarlos al carrito y confirmar una cita. Si es administrador, se le muestra un panel con opciones para publicar, actualizar vestidos o consultar el inventario. Cada usuario accede solo a las funciones correspondientes a su perfil, asegurando un flujo controlado y eficiente.
 
+
+## Diseño de la Base de Datos
 
 ![bd](https://github.com/user-attachments/assets/70f26813-059b-43fd-b3f3-4fc26cb98cfc)
 
