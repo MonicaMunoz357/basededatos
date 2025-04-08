@@ -524,17 +524,20 @@ Se implementó una base de datos relacional robusta utilizando PostgreSQL, dise�
 
 -Automatizar pruebas: Sería ideal agregar pruebas automáticas que verifiquen que todo sigue funcionando correctamente cuando se hagan cambios en la base de datos, para evitar errores sin necesidad de hacer pruebas manuales.
 
-- anexos
-     - manual de usuario
-Nombre del Sistema: Sistema web administrable 
 
-Descripción General:
+### anexos
+
+### manual de usuario
+- **Nombre del Sistema**: Sistema web administrable 
+
+- **Descripción General**:
 Este sistema permite a los usuarios gestionar vestidos disponibles para renta o venta, visualizar el inventario, realizar citas y registrar productos en carritos. También lleva control de movimientos en el inventario y tallas disponibles.
 
-Acceso al Sistema:
+- **Acceso al Sistema**:
 Los usuarios acceden mediante su correo electrónico y contraseña. El sistema diferencia entre usuarios regulares y administradores mediante un campo booleano (rol).
 
-Funciones Principales:
+
+### Funciones Principales:
 
 Gestión de Usuarios:
 Registro y manejo de usuarios con sus datos personales (nombre, correo, teléfono). El rol define si es administrador.
@@ -630,13 +633,9 @@ CREATE TABLE cita_productos (
 );
 
 ````
+    
      
-     - digramas de DB
-
-
-    ![Diagrama de Base de datoa](https://github.com/user-attachments/assets/49075ae3-20e1-4efa-8de1-95a449057ac9)
-     
-- referencias
+### referencias
 
 BM. (s.f.). ¿Qué es PostgreSQL? IBM. Recuperado el 7 de abril de 2025, de https://www.ibm.com/mx-es/topics/postgresql
 
