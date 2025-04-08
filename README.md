@@ -161,6 +161,14 @@ La base de datos representa el sistema del sitio web administrativo para la gest
 | imagen        | VARCHAR(255)     | URL de imagen             |
 | descripcion   | TEXT             | Descripción del vestido   |
 
+### Tabla: `vestido_tallas`
+
+| Campo         | Tipo de dato     | Descripción                                              |
+|---------------|------------------|----------------------------------------------------------|
+| `id_vestido`  | `integer`        | Clave foránea que referencia a `vestidos.id_vestido`     |
+| `id_talla`    | `integer`        | Clave foránea que referencia a `tallas.id_talla`         |
+
+
 #### Tabla: `talla`
 | Campo       | Tipo de dato     | Descripción               |
 |-------------|------------------|---------------------------|
@@ -309,7 +317,10 @@ A continuación, se describen los pasos para su instalación en diferentes siste
 
    ![image](https://github.com/user-attachments/assets/1d0f0d97-762f-4d55-8c3a-36e75e553ea8)
 
+
 ## Creación de la Base de Datos
+
+A continuación se presentan los scripts SQL utilizados para crear las tablas principales del sistema de renta/venta de vestidos. Estas estructuras definen el modelo relacional con integridad referencial y validaciones básicas.
 
 ```sql
 -- Tabla: usuarios
@@ -340,12 +351,32 @@ CREATE TABLE tallas (
     talla VARCHAR(10) NOT NULL
 );
 
+-- Tabla: vestido_tallas (relación muchos a muchos)
+CREATE TABLE vestido_tallas (
+    id_vestido INTEGER NOT NULL,
+    id_talla INTEGER NOT NULL,
+    PRIMARY KEY (id_vestido, id_talla),
+    FOREIGN KEY (id_vestido) REFERENCES vestidos(id_vestido) ON DELETE CASCADE,
+    FOREIGN KEY (id_talla) REFERENCES tallas(id_talla) ON DELETE CASCADE
+);
+
 -- Tabla: inventario_vestidos
 CREATE TABLE inventario_vestidos (
     id_inventario SERIAL PRIMARY KEY,
     id_vestido INTEGER NOT NULL,
     id_talla INTEGER NOT NULL,
     disponibilidad INTEGER NOT NULL CHECK (disponibilidad >= 0),
+    FOREIGN KEY (id_vestido) REFERENCES vestidos(id_vestido) ON DELETE CASCADE,
+    FOREIGN KEY (id_talla) REFERENCES tallas(id_talla) ON DELETE CASCADE
+);
+
+-- Tabla: movimientos_inventario
+CREATE TABLE movimientos_inventario (
+    id_movimiento SERIAL PRIMARY KEY,
+    id_vestido INTEGER NOT NULL,
+    id_talla INTEGER NOT NULL,
+    cantidad INTEGER NOT NULL CHECK (cantidad > 0),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_vestido) REFERENCES vestidos(id_vestido) ON DELETE CASCADE,
     FOREIGN KEY (id_talla) REFERENCES tallas(id_talla) ON DELETE CASCADE
 );
@@ -387,16 +418,6 @@ CREATE TABLE cita_productos (
     FOREIGN KEY (id_vestido) REFERENCES vestidos(id_vestido) ON DELETE CASCADE
 );
 
--- Tabla: movimientos_inventario
-CREATE TABLE movimientos_inventario (
-    id_movimiento SERIAL PRIMARY KEY,
-    id_vestido INTEGER NOT NULL,
-    id_talla INTEGER NOT NULL,
-    cantidad INTEGER NOT NULL CHECK (cantidad > 0),
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_vestido) REFERENCES vestidos(id_vestido) ON DELETE CASCADE,
-    FOREIGN KEY (id_talla) REFERENCES tallas(id_talla) ON DELETE CASCADE
-);
 ````
 
 #### Registro automático en inventario con triggers
@@ -557,83 +578,6 @@ Los usuarios agregan vestidos al carrito. Este carrito queda registrado con cant
 Movimientos de Inventario:
 Cada entrada o salida de vestidos del inventario se registra para mantener trazabilidad.
 
-```` scripts
--- Tabla usuarios
-CREATE TABLE usuarios (
-    id_usuario SERIAL PRIMARY KEY,
-    nombre VARCHAR(255),
-    correo VARCHAR(255),
-    telefono VARCHAR(12),
-    password VARCHAR(255),
-    fecha TIMESTAMP,
-    rol BOOLEAN
-);
-
--- Tabla vestidos
-CREATE TABLE vestidos (
-    id_vestido SERIAL PRIMARY KEY,
-    nombre VARCHAR(255),
-    precio NUMERIC(10,2),
-    categoria VARCHAR(100),
-    marca VARCHAR(100),
-    imagen VARCHAR(255),
-    descripcion TEXT
-);
-
--- Tabla tallas
-CREATE TABLE tallas (
-    id_talla INTEGER PRIMARY KEY,
-    talla VARCHAR(10)
-);
-
--- Tabla inventario_vestidos
-CREATE TABLE inventario_vestidos (
-    id_inventario SERIAL PRIMARY KEY,
-    id_vestido INTEGER REFERENCES vestidos(id_vestido),
-    id_talla INTEGER REFERENCES tallas(id_talla),
-    disponibilidad INTEGER
-);
-
--- Tabla movimientos_inventario
-CREATE TABLE movimientos_inventario (
-    id_movimiento SERIAL PRIMARY KEY,
-    id_vestido INTEGER REFERENCES vestidos(id_vestido),
-    cantidad INTEGER,
-    fecha TIMESTAMP
-);
-
--- Tabla carrito
-CREATE TABLE carrito (
-    id_carrito SERIAL PRIMARY KEY,
-    id_usuario INTEGER REFERENCES usuarios(id_usuario),
-    agregado TIMESTAMP
-);
-
--- Tabla carrito_productos
-CREATE TABLE carrito_productos (
-    id_carrito INTEGER REFERENCES carrito(id_carrito),
-    id_vestido INTEGER REFERENCES vestidos(id_vestido),
-    cantidad INTEGER
-);
-
--- Tabla citas
-CREATE TABLE citas (
-    id_cita SERIAL PRIMARY KEY,
-    id_usuario INTEGER REFERENCES usuarios(id_usuario),
-    fecha_cita DATE,
-    hora TIME
-);
-
-
--- Tabla cita_productos
-CREATE TABLE cita_productos (
-    id_cita INTEGER REFERENCES citas(id_cita),
-    id_vestido INTEGER REFERENCES vestidos(id_vestido),
-    cantidad INTEGER
-);
-
-````
-    
      
 ### referencias
 
