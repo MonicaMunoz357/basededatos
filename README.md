@@ -398,6 +398,46 @@ CREATE TABLE movimientos_inventario (
     FOREIGN KEY (id_talla) REFERENCES tallas(id_talla) ON DELETE CASCADE
 );
 ````
+
+#### Registro automático en inventario con triggers
+
+Para automatizar el registro de los vestidos en inventario y mantener un historial de movimientos desde el primer momento en que se da de alta un producto, se creó un trigger que se ejecuta al insertar un nuevo vestido con su talla.
+
+Este trigger se encarga de:
+- Verificar si ya existe un registro de esa talla y vestido en `inventario_vestidos`.
+- Si no existe, crear dicho registro con disponibilidad 0.
+- Registrar automáticamente un movimiento de entrada con cantidad cero, como evidencia del alta inicial.
+
+Esta automatización permite evitar registros manuales y asegura la trazabilidad de todos los movimientos desde su origen.
+
+A continuación se muestra el código del trigger utilizado:
+
+```sql
+CREATE OR REPLACE FUNCTION agregar_inventario_y_movimiento()
+RETURNS TRIGGER AS $$
+DECLARE
+  inventario_existente INTEGER;
+  nuevo_id_inventario INTEGER;
+BEGIN
+  SELECT id_inventario INTO inventario_existente
+  FROM inventario_vestidos
+  WHERE id_vestido = NEW.id_vestido AND id_talla = NEW.id_talla;
+
+  IF inventario_existente IS NULL THEN
+    INSERT INTO inventario_vestidos(id_vestido, id_talla, disponibilidad)
+    VALUES (NEW.id_vestido, NEW.id_talla, 0)
+    RETURNING id_inventario INTO nuevo_id_inventario;
+
+    INSERT INTO movimientos_inventario(id_vestido, id_talla, cantidad, fecha)
+    VALUES (NEW.id_vestido, NEW.id_talla, 0, NOW()); -- cantidad inicial 0
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
 ## Pruebas de Inserción y Consulta de Datos (Esquema Actualizado)
 
 ### 1. Inserciones de Prueba
