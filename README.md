@@ -629,6 +629,7 @@ CREATE TABLE cita_productos (
     cantidad INTEGER
 );
 
+````
      
      - digramas de DB
 
