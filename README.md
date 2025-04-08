@@ -554,7 +554,7 @@ Los usuarios agregan vestidos al carrito. Este carrito queda registrado con cant
 Movimientos de Inventario:
 Cada entrada o salida de vestidos del inventario se registra para mantener trazabilidad.
 
-     - scripts
+```` scripts
 -- Tabla usuarios
 CREATE TABLE usuarios (
     id_usuario SERIAL PRIMARY KEY,
