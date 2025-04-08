@@ -546,9 +546,9 @@ Se implementó una base de datos relacional robusta utilizando PostgreSQL, dise�
 -Automatizar pruebas: Sería ideal agregar pruebas automáticas que verifiquen que todo sigue funcionando correctamente cuando se hagan cambios en la base de datos, para evitar errores sin necesidad de hacer pruebas manuales.
 
 
-### anexos
+### Anexos
 
-### manual de usuario
+### Manual de usuario
 - **Nombre del Sistema**: Sistema web administrable 
 
 - **Descripción General**:
@@ -579,7 +579,7 @@ Movimientos de Inventario:
 Cada entrada o salida de vestidos del inventario se registra para mantener trazabilidad.
 
      
-### referencias
+### Referencias
 
 BM. (s.f.). ¿Qué es PostgreSQL? IBM. Recuperado el 7 de abril de 2025, de https://www.ibm.com/mx-es/topics/postgresql
 
